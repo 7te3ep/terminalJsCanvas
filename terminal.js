@@ -4,7 +4,8 @@ import {c, ctx} from "./modules/canvas.js";
 
 var text = {
     color1: "#D3D7CF",
-    color2:"#26A269"
+    color2:"#26A269",
+    color3:"#A347BA"
 }
 
 var gameFrame = 0
@@ -16,6 +17,7 @@ var cursor = {
 var charOnScreen = []
 var prompt = []
 var terminal = {
+    scroll : 0,
     margin:50,
     lineHeight:40
 } 
@@ -25,7 +27,7 @@ function nextLine(){
     cursor.x = 50 
 }
 
-function write(keys,editable,color){
+function write(keys,editable,color,jump){
     for (let i = 0;i<keys.length;i++){
         cursor.show = true
         gameFrame = 1
@@ -37,6 +39,9 @@ function write(keys,editable,color){
     
         cursor.x +=  keys[i].length * 25
     }
+    if (jump){
+        nextLine()
+    }
 }
 
 function getCommand(command){
@@ -44,15 +49,13 @@ function getCommand(command){
     for (let i = 0;i<command.length;i++){
         result = result + command[i].value
     }
-    console.log(result)
     if (result == "help"){
-        write("Commands are : ",true,text.color1)
-        nextLine()
+        write("Commands are : ",true,text.color1,true)
         write("help : to see all commands ",true,text.color1)
     }else if (result == "quoi"){
-        write("FEUUUUUUR",true,text.color1)
+        write("FEUUUUUUR",true,text.color3)
     }else {
-        write("To get started, type help and enjoy",true,text.color1)
+        write("To get started, type help and enjoy",true,text.color3)
     }
     nextLine()
 }
@@ -86,6 +89,20 @@ window.addEventListener("keydown",function(e){
 
 })
 
+window.addEventListener("wheel", event => {
+    const delta = (Math.sign(event.deltaY)*50)*-1
+    if (cursor.y + delta >= 10+terminal.margin && cursor.y > 50){
+        cursor.y += delta
+        charOnScreen.forEach(function(item){
+            item.y += delta
+        })
+        prompt.forEach(function(item){
+            item.y += delta
+        })
+        terminal.scroll += delta
+    }
+});
+
 write("terminal_7te3ep~: ",false,text.color2)
 let gameloop = setInterval(function(){
     //CLEAR 
@@ -109,3 +126,4 @@ let gameloop = setInterval(function(){
         gameFrame = 0
     }
 },32)
+
