@@ -37,7 +37,24 @@ function write(keys,editable,color){
     
         cursor.x +=  keys[i].length * 25
     }
+}
 
+function getCommand(command){
+    var result = ""
+    for (let i = 0;i<command.length;i++){
+        result = result + command[i].value
+    }
+    console.log(result)
+    if (result == "help"){
+        write("Commands are : ",true,text.color1)
+        nextLine()
+        write("help : to see all commands ",true,text.color1)
+    }else if (result == "quoi"){
+        write("FEUUUUUUR",true,text.color1)
+    }else {
+        write("To get started, type help and enjoy",true,text.color1)
+    }
+    nextLine()
 }
 
 window.addEventListener("keydown",function(e){
@@ -53,6 +70,7 @@ window.addEventListener("keydown",function(e){
     switch (e.key){
         case "Enter":
             nextLine()
+            getCommand(prompt)
             write("terminal_7te3ep~: ",false,text.color2)
             prompt = []
             return
