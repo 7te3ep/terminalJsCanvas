@@ -90,16 +90,19 @@ window.addEventListener("keydown",function(e){
 })
 
 window.addEventListener("wheel", event => {
-    const delta = (Math.sign(event.deltaY)*50)*-1
-    if (cursor.y + delta >= 10+terminal.margin && cursor.y > 50){
-        cursor.y += delta
-        charOnScreen.forEach(function(item){
-            item.y += delta
-        })
-        prompt.forEach(function(item){
-            item.y += delta
-        })
-        terminal.scroll += delta
+    const delta = (Math.sign(event.deltaY)*50)
+    console.log(terminal.scroll)
+    if (cursor.y + delta >= 10+terminal.margin || cursor.y >= canvas.height){
+        if (terminal.scroll+ delta <= 0){
+            cursor.y += delta
+            charOnScreen.forEach(function(item){
+                item.y += delta
+            })
+            prompt.forEach(function(item){
+                item.y += delta
+            })
+            terminal.scroll += delta
+        }
     }
 });
 
