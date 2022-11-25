@@ -54,12 +54,36 @@ function getCommand(command){
         write("help : to see all commands ",true,text.color1)
     }else if (result == "quoi"){
         write("FEUUUUUUR",true,text.color3)
-    }else {
+    }else if (result == "clear"){
+        modifyScroll(50,false)
+        charOnScreen = []
+        prompt = []
+    }
+    else {
         write("To get started, type help and enjoy",true,text.color3)
     }
     nextLine()
 }
+function modifyScroll(value,add){
+    if (add){
+        cursor.y += value
+        charOnScreen.forEach(function(item){
+            item.y += value
+        })
+        prompt.forEach(function(item){
+            item.y += value
+        })
+    }else {
+        cursor.y = value
+        charOnScreen.forEach(function(item){
+            item.y = value
+        })
+        prompt.forEach(function(item){
+            item.y = value
+        })
+    }
 
+}
 window.addEventListener("keydown",function(e){
     if (e.key == "Backspace"){
         if (prompt.length > 0){
@@ -94,13 +118,7 @@ window.addEventListener("wheel", event => {
     console.log(terminal.scroll)
     if (cursor.y + delta >= 10+terminal.margin || cursor.y >= canvas.height){
         if (terminal.scroll+ delta <= 0){
-            cursor.y += delta
-            charOnScreen.forEach(function(item){
-                item.y += delta
-            })
-            prompt.forEach(function(item){
-                item.y += delta
-            })
+            modifyScroll(delta,true)
             terminal.scroll += delta
         }
     }
