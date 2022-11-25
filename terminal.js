@@ -74,6 +74,7 @@ function modifyScroll(value,add){
             item.y += value
         })
     }else {
+        terminal.scroll = 0
         cursor.y = value
         charOnScreen.forEach(function(item){
             item.y = value
