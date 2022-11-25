@@ -53,8 +53,10 @@ window.addEventListener("keyup",function(e){
             return
         case "Shift":
             return
+        case 'CapsLock':
+            return
     }
-    if (cursor.x > canvas.width -100){
+    if (cursor.x + e.key.length * 25 > canvas.width -100){
         nextLine()
     }
     write([e.key],true)
@@ -62,7 +64,7 @@ window.addEventListener("keyup",function(e){
 })
 
 
-write(["t","e","r","m","i","n","a","l","~",":"," "],false)
+write(["t","e","r","m","i","n","a","l","_","7","t","e","3","e","p","~",":"," "],false)
 let gameloop = setInterval(function(){
     //CLEAR 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
