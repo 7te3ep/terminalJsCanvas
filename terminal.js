@@ -2,6 +2,10 @@ let canvas = document.getElementById('canva')
 import {random} from "./modules/random.js";
 import {c, ctx} from "./modules/canvas.js";
 
+var text = {
+    color1: "#D3D7CF",
+    color2:"#26A269"
+}
 
 var gameFrame = 0
 var cursor = {
@@ -21,21 +25,22 @@ function nextLine(){
     cursor.x = 50 
 }
 
-function write(keys,editable){
-    keys.forEach(function(item){
+function write(keys,editable,color){
+    for (let i = 0;i<keys.length;i++){
         cursor.show = true
         gameFrame = 1
     
-        charOnScreen.push({value:item,x:cursor.x,y:cursor.y})
+        charOnScreen.push({value:keys[i],x:cursor.x,y:cursor.y,color:color})
         if (editable){
-            prompt.push({value:item,x:cursor.x,y:cursor.y})
+            prompt.push({value:keys[i],x:cursor.x,y:cursor.y})
         }
     
-        cursor.x +=  item.length * 25
-    })
+        cursor.x +=  keys[i].length * 25
+    }
+
 }
 
-window.addEventListener("keyup",function(e){
+window.addEventListener("keydown",function(e){
     if (e.key == "Backspace"){
         if (prompt.length > 0){
             cursor.x = charOnScreen[charOnScreen.length-1].x
@@ -48,7 +53,7 @@ window.addEventListener("keyup",function(e){
     switch (e.key){
         case "Enter":
             nextLine()
-            write(["t","e","r","m","i","n","a","l","~",":"," "],false)
+            write("terminal_7te3ep~: ",false,text.color2)
             prompt = []
             return
         case "Shift":
@@ -59,24 +64,24 @@ window.addEventListener("keyup",function(e){
     if (cursor.x + e.key.length * 25 > canvas.width -100){
         nextLine()
     }
-    write([e.key],true)
+    write(e.key,true,text.color1)
 
 })
 
-
-write(["t","e","r","m","i","n","a","l","_","7","t","e","3","e","p","~",":"," "],false)
+write("terminal_7te3ep~: ",false,text.color2)
 let gameloop = setInterval(function(){
     //CLEAR 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    console.log(cursor.x,prompt)
 
     if (cursor.show){
-        ctx.fillRect(cursor.x,cursor.y-40,20,40)
+        ctx.fillStyle = text.color1
+        ctx.fillRect(cursor.x,cursor.y-38,20,40)
     }
     if (gameFrame % 10 == 0){
         cursor.show = !cursor.show
     }
     charOnScreen.forEach(function(item){
+        ctx.fillStyle = item.color
         ctx.fillText(item.value,item.x,item.y)
     })
 
@@ -86,3 +91,16 @@ let gameloop = setInterval(function(){
         gameFrame = 0
     }
 },32) 
+
+
+
+
+
+
+
+
+
+
+
+
+

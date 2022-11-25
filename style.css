@@ -6,6 +6,7 @@
 
 
 body {
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,4 +18,9 @@ body {
     background-color:#2E3436;
     border-radius: 5%;
     box-shadow: #00000082 10px 10px 20px;
+        /* Indicate the element draggable */
+        cursor: move;
+
+        /* It will be positioned absolutely */
+        position: absolute;
 }
