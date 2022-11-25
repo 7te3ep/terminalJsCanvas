@@ -17,7 +17,7 @@ body {
     height: 650px;
     background-color:#2E3436;
     border-radius: 5%;
-    box-shadow: #00000082 10px 10px 20px;
+    box-shadow: #000000e3 0px 0px 20px;
         /* Indicate the element draggable */
         cursor: move;
 

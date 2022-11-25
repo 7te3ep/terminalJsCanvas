@@ -90,17 +90,4 @@ let gameloop = setInterval(function(){
     if (gameFrame == 1000){
         gameFrame = 0
     }
-},32) 
-
-
-
-
-
-
-
-
-
-
-
-
-
+},32)
