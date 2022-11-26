@@ -105,51 +105,52 @@ window.addEventListener("keydown",function(e){
                 prompt.pop()
             }
             return
+
         case "Enter":
             nextLine()
             getCommand(prompt)
             write("terminal_7te3ep~: ",false,text.color2)
             prompt = []
             return
+
         case "Shift":
             return
+
         case 'CapsLock':
             return
+
         case "ArrowDown":
-                console.log(terminal.cmdMemoryIndex, terminal.lastCmd)
-                if (terminal.cmdMemoryIndex-1 <= terminal.lastCmd.length-1 && terminal.cmdMemoryIndex-1>=0){
+            if (terminal.cmdMemoryIndex-1 <= terminal.lastCmd.length-1 && terminal.cmdMemoryIndex-1>=0){
                 charOnScreen.splice(charOnScreen.length-prompt.length,prompt.length)
                 cursor.x -=  prompt.length * 25
                 prompt = []
                 terminal.cmdMemoryIndex -= 1
-                console.log(terminal.cmdMemoryIndex, terminal.lastCmd)
-                write(terminal.lastCmd[terminal.lastCmd.length-1-terminal.cmdMemoryIndex],true,text.color1)
-    
+                let lastCmd = terminal.lastCmd[terminal.lastCmd.length-1-terminal.cmdMemoryIndex]
+                write(lastCmd,true,text.color1)
             }
             return
+
         case "ArrowUp":
-                console.log(terminal.cmdMemoryIndex, terminal.lastCmd)
-                if (terminal.cmdMemoryIndex+1 <= terminal.lastCmd.length-1 && terminal.cmdMemoryIndex+1>=0){
+            if (terminal.cmdMemoryIndex+1 <= terminal.lastCmd.length-1 && terminal.cmdMemoryIndex+1>=0){
                 charOnScreen.splice(charOnScreen.length-prompt.length,prompt.length)
                 cursor.x -=  prompt.length * 25
                 prompt = []
                 terminal.cmdMemoryIndex += 1
-                console.log(terminal.cmdMemoryIndex, terminal.lastCmd)
-                write(terminal.lastCmd[terminal.lastCmd.length-1-terminal.cmdMemoryIndex],true,text.color1)
+                let lastCmd = terminal.lastCmd[terminal.lastCmd.length-1-terminal.cmdMemoryIndex]
+                write(lastCmd,true,text.color1)
             }
             return
+
         default:
             write(e.key,true,text.color1)
     }
     if (cursor.x + e.key.length * 25 > canvas.width -100){
         nextLine()
     }
-
 })
 
 window.addEventListener("wheel", event => {
     const delta = (Math.sign(event.deltaY)*50)
-    console.log(terminal.scroll)
     if (cursor.y + delta >= 10+terminal.margin || cursor.y >= canvas.height){
         if (terminal.scroll+ delta <= 0){
             modifyScroll(delta,true)
