@@ -9,20 +9,53 @@ var text = {
 }
 
 var gameFrame = 0
+
 var cursor = {
     x:50,
     y:100,
     show:true
 }
+
+var cmdList = ["help","quoi","clear"]
+
 var charOnScreen = []
 var prompt = []
+
 var terminal = {
     cmdMemoryIndex:-1,
     lastCmd : [],
+    lastWord:"",
     scroll : 0,
     margin:50,
-    lineHeight:40
+    lineHeight:40,
 } 
+
+function highLightCmd(word){
+    var match = true
+    cmdList.every(function(cmd){
+        match = true
+        for (let i = 0;i<word.length;i++){
+            if (word[i] != cmd[i] && i <= cmd.length-1){
+                match = false
+            }
+        }
+        if (match){
+            for (let i = 1;i-1<word.length;i++){
+                console.log("yes",charOnScreen[charOnScreen.length-(i)])
+                charOnScreen[charOnScreen.length-(i)].color = text.color3
+            }
+            //return
+        }else {
+            for (let i = 1;i-1<word.length;i++){
+                console.log("yes",charOnScreen[charOnScreen.length-(i)])
+                charOnScreen[charOnScreen.length-(i)].color = text.color1
+            }
+            return true
+        }
+        console.log(cmd)
+    })
+
+}
 
 function nextLine(){
     cursor.y += 50 
@@ -99,6 +132,7 @@ window.addEventListener("keydown",function(e){
     switch (e.key){
         case  "Backspace":
             if (prompt.length > 0){
+                terminal.lastWord = terminal.lastWord.slice(0, -1)
                 cursor.x = charOnScreen[charOnScreen.length-1].x
                 cursor.y = charOnScreen[charOnScreen.length-1].y
                 charOnScreen.pop()
@@ -107,6 +141,7 @@ window.addEventListener("keydown",function(e){
             return
 
         case "Enter":
+            terminal.lastWord = ""
             nextLine()
             getCommand(prompt)
             write("terminal_7te3ep~: ",false,text.color2)
@@ -140,9 +175,14 @@ window.addEventListener("keydown",function(e){
                 write(lastCmd,true,text.color1)
             }
             return
-
-        default:
+        case " ":
+            terminal.lastWord = ""
             write(e.key,true,text.color1)
+            return
+        default:
+            terminal.lastWord = terminal.lastWord+e.key
+            write(e.key,true,text.color1)
+            highLightCmd(terminal.lastWord)
     }
     if (cursor.x + e.key.length * 25 > canvas.width -100){
         nextLine()
