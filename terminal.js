@@ -17,6 +17,8 @@ var cursor = {
 var charOnScreen = []
 var prompt = []
 var terminal = {
+    cmdMemoryIndex:-1,
+    lastCmd : [],
     scroll : 0,
     margin:50,
     lineHeight:40
@@ -49,21 +51,29 @@ function getCommand(command){
     for (let i = 0;i<command.length;i++){
         result = result + command[i].value
     }
-    if (result == "help"){
-        write("Commands are : ",true,text.color1,true)
-        write("help : to see all commands ",true,text.color1)
-    }else if (result == "quoi"){
-        write("FEUUUUUUR",true,text.color3)
-    }else if (result == "clear"){
-        modifyScroll(50,false)
-        charOnScreen = []
-        prompt = []
+    switch(result){
+        case "help":
+            write("Commands are : ",true,text.color3,true)
+            write("help : to see all commands ",true,text.color1,true)
+            write("clear : to clear the terminal ",true,text.color1)
+            break
+        case "quoi":
+            write("FEUUUUUUR",true,text.color3)
+            break
+        case "clear":
+            modifyScroll(50,false)
+            charOnScreen = []
+            prompt = []
+            break
+        default:
+            write("To get started, type help and enjoy",true,text.color3)
+            break
     }
-    else {
-        write("To get started, type help and enjoy",true,text.color3)
-    }
+    terminal.lastCmd.push(result)
+    terminal.cmdMemoryIndex = -1
     nextLine()
 }
+
 function modifyScroll(value,add){
     if (add){
         cursor.y += value
@@ -83,19 +93,18 @@ function modifyScroll(value,add){
             item.y = value
         })
     }
-
 }
+
 window.addEventListener("keydown",function(e){
-    if (e.key == "Backspace"){
-        if (prompt.length > 0){
-            cursor.x = charOnScreen[charOnScreen.length-1].x
-            cursor.y = charOnScreen[charOnScreen.length-1].y
-            charOnScreen.pop()
-            prompt.pop()
-        }
-        return
-    }
     switch (e.key){
+        case  "Backspace":
+            if (prompt.length > 0){
+                cursor.x = charOnScreen[charOnScreen.length-1].x
+                cursor.y = charOnScreen[charOnScreen.length-1].y
+                charOnScreen.pop()
+                prompt.pop()
+            }
+            return
         case "Enter":
             nextLine()
             getCommand(prompt)
@@ -106,11 +115,35 @@ window.addEventListener("keydown",function(e){
             return
         case 'CapsLock':
             return
+        case "ArrowDown":
+                console.log(terminal.cmdMemoryIndex, terminal.lastCmd)
+                if (terminal.cmdMemoryIndex-1 <= terminal.lastCmd.length-1 && terminal.cmdMemoryIndex-1>=0){
+                charOnScreen.splice(charOnScreen.length-prompt.length,prompt.length)
+                cursor.x -=  prompt.length * 25
+                prompt = []
+                terminal.cmdMemoryIndex -= 1
+                console.log(terminal.cmdMemoryIndex, terminal.lastCmd)
+                write(terminal.lastCmd[terminal.lastCmd.length-1-terminal.cmdMemoryIndex],true,text.color1)
+    
+            }
+            return
+        case "ArrowUp":
+                console.log(terminal.cmdMemoryIndex, terminal.lastCmd)
+                if (terminal.cmdMemoryIndex+1 <= terminal.lastCmd.length-1 && terminal.cmdMemoryIndex+1>=0){
+                charOnScreen.splice(charOnScreen.length-prompt.length,prompt.length)
+                cursor.x -=  prompt.length * 25
+                prompt = []
+                terminal.cmdMemoryIndex += 1
+                console.log(terminal.cmdMemoryIndex, terminal.lastCmd)
+                write(terminal.lastCmd[terminal.lastCmd.length-1-terminal.cmdMemoryIndex],true,text.color1)
+            }
+            return
+        default:
+            write(e.key,true,text.color1)
     }
     if (cursor.x + e.key.length * 25 > canvas.width -100){
         nextLine()
     }
-    write(e.key,true,text.color1)
 
 })
 
