@@ -16,8 +16,12 @@ var cursor = {
     show:true
 }
 
-var cmdList = ["help","quoi","clear"]
-
+var cmd = [
+    {value:"help",info:"Give all commands available"},
+    {value:"clear",info:"Clear all commands, they still on memory of arrow up"},
+    {value:"github",info:"Show my github"},
+    {value:"contact",info:"Show my email adress"},
+]
 var charOnScreen = []
 var prompt = []
 
@@ -28,33 +32,29 @@ var terminal = {
     scroll : 0,
     margin:50,
     lineHeight:40,
-} 
+}
 
 function highLightCmd(word){
     var match = true
-    cmdList.every(function(cmd){
+    cmd.every(function(cmd){
         match = true
         for (let i = 0;i<word.length;i++){
-            if (word[i] != cmd[i] && i <= cmd.length-1){
+            if (word[i].value != cmd.value[i] /*&& i <= cmd.length-1*/){
                 match = false
             }
         }
         if (match){
             for (let i = 1;i-1<word.length;i++){
-                console.log("yes",charOnScreen[charOnScreen.length-(i)])
                 charOnScreen[charOnScreen.length-(i)].color = text.color3
             }
             //return
         }else {
             for (let i = 1;i-1<word.length;i++){
-                console.log("yes",charOnScreen[charOnScreen.length-(i)])
                 charOnScreen[charOnScreen.length-(i)].color = text.color1
             }
             return true
         }
-        console.log(cmd)
     })
-
 }
 
 function nextLine(){
@@ -71,8 +71,12 @@ function write(keys,editable,color,jump){
         if (editable){
             prompt.push({value:keys[i],x:cursor.x,y:cursor.y})
         }
-    
-        cursor.x +=  keys[i].length * 25
+        
+        if (cursor.x + keys[i].length * 25 > canvas.width -130){
+            nextLine()
+        }else {
+            cursor.x +=  keys[i].length * 25
+        }
     }
     if (jump){
         nextLine()
@@ -87,8 +91,7 @@ function getCommand(command){
     switch(result){
         case "help":
             write("Commands are : ",true,text.color3,true)
-            write("help : to see all commands ",true,text.color1,true)
-            write("clear : to clear the terminal ",true,text.color1)
+            cmd.forEach(function(item){write(item.value+" : "+item.info+", ",true,text.color1,true)})
             break
         case "quoi":
             write("FEUUUUUUR",true,text.color3)
@@ -97,6 +100,12 @@ function getCommand(command){
             modifyScroll(50,false)
             charOnScreen = []
             prompt = []
+            break
+        case "github":
+            write("https://github.com/7te3ep",true,text.color3)
+            break
+        case "contact":
+            write("7te3ep@gmail.com",true,text.color3)
             break
         default:
             write("To get started, type help and enjoy",true,text.color3)
@@ -154,6 +163,9 @@ window.addEventListener("keydown",function(e){
         case 'CapsLock':
             return
 
+        case 'Dead':
+            return
+
         case "ArrowDown":
             if (terminal.cmdMemoryIndex-1 <= terminal.lastCmd.length-1 && terminal.cmdMemoryIndex-1>=0){
                 charOnScreen.splice(charOnScreen.length-prompt.length,prompt.length)
@@ -182,7 +194,8 @@ window.addEventListener("keydown",function(e){
         default:
             terminal.lastWord = terminal.lastWord+e.key
             write(e.key,true,text.color1)
-            highLightCmd(terminal.lastWord)
+            highLightCmd(prompt)
+            //terminal.lastWord
     }
     if (cursor.x + e.key.length * 25 > canvas.width -100){
         nextLine()
@@ -223,3 +236,21 @@ let gameloop = setInterval(function(){
     }
 },32)
 
+let card = document.querySelector('#canva');
+
+document.addEventListener('mousemove', function(e) {
+    let xAxis = (window.innerWidth / 2 - e.pageX) /20 ;
+    let yAxis = (window.innerHeight / 2 - e.pageY) /50;
+    card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+});
+
+
+// ________________________________________
+/// You have Egyptian flu: you're going to \
+//\ be a mummy.                            /
+// ----------------------------------------
+//        \   ^__^
+//         \  (oo)\_______
+//            (__)\       )\/\
+//                ||----w |
+//                ||     ||"
